@@ -1,0 +1,66 @@
+﻿import tkinter as tk
+from tkinter import messagebox
+
+class GroceryShop:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Grocery Shop Management")
+        self.root.geometry("400x400")
+
+        self.inventory = {}
+
+        # Widgets
+        self.item_label = tk.Label(root, text="Item Name:")
+        self.item_label.pack()
+        self.item_entry = tk.Entry(root)
+        self.item_entry.pack()
+
+        self.qty_label = tk.Label(root, text="Quantity:")
+        self.qty_label.pack()
+        self.qty_entry = tk.Entry(root)
+        self.qty_entry.pack()
+
+        self.add_button = tk.Button(root, text="Add Item", command=self.add_item)
+        self.add_button.pack()
+
+        self.display_button = tk.Button(root, text="Display Items", command=self.display_items)
+        self.display_button.pack()
+
+        self.delete_button = tk.Button(root, text="Delete Item", command=self.delete_item)
+        self.delete_button.pack()
+
+        self.items_listbox = tk.Listbox(root)
+        self.items_listbox.pack()
+
+    def add_item(self):
+        item = self.item_entry.get()
+        qty = self.qty_entry.get()
+
+        if item and qty.isdigit():
+            self.inventory[item] = int(qty)
+            messagebox.showinfo("Success", f"Added {qty} of {item}")
+            self.item_entry.delete(0, tk.END)
+            self.qty_entry.delete(0, tk.END)
+        else:
+            messagebox.showerror("Error", "Invalid input. Please enter a valid item and quantity.")
+
+    def display_items(self):
+        self.items_listbox.delete(0, tk.END)
+        for item, qty in self.inventory.items():
+            self.items_listbox.insert(tk.END, f"{item}: {qty}")
+
+    def delete_item(self):
+        selected_item = self.items_listbox.curselection()
+        if selected_item:
+            item_text = self.items_listbox.get(selected_item)
+            item = item_text.split(":")[0]
+            del self.inventory[item]
+            self.items_listbox.delete(selected_item)
+            messagebox.showinfo("Success", f"Deleted {item}")
+        else:
+            messagebox.showerror("Error", "No item selected. Please select an item to delete.")
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = GroceryShop(root)
+    root.mainloop()
